@@ -1,0 +1,11 @@
+# For fetching YouTube video transcripts easily
+youtube-transcript-api
+
+# For building an interactive web app UI with Streamlit
+streamlit
+
+# Google Gemini Pro / Generative AI client library for text summarization
+google-generativeai
+
+# For loading environment variables from a .env file securely
+python-dotenv
