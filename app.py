@@ -22,12 +22,25 @@ def extract_transcript_details(youtube_video_url):
         return transcript_text, video_id
 
     except TranscriptsDisabled:
-        st.error("Transcripts are disabled for this video.")
+        st.error("❌ Transcripts are disabled for this video.")
     except NoTranscriptFound:
-        st.error("No transcript found for this video.")
-    except Exception as e:
-        st.error(f"Error fetching transcript: {e}")
+        st.error("❌ No transcript found for this video.")
+    except Exception:
+        st.error(
+            """
+            ⚠️ **Could not retrieve transcript for this video.**
 
+            This issue is likely because **YouTube is blocking transcript requests from cloud servers like Streamlit**. 
+            This can happen due to:
+
+            - Too many requests from the same IP.
+            - The app is hosted on a cloud platform (like Streamlit, GCP, AWS), which YouTube restricts.
+
+            **Solutions:**
+            - Run this app locally on your computer to avoid IP blocks.
+            - Or try a different video with subtitles enabled.
+            """
+        )
     return None, None
 
 PROMPT_TEMPLATE = """
@@ -50,7 +63,7 @@ def generate_gemini_summary(transcript_text):
 def main():
     st.set_page_config(page_title="YouTube Video Summarizer", page_icon="🎥", layout="wide")
 
-    # Custom CSS for better styling
+    # Custom CSS
     st.markdown(
         """
         <style>
@@ -92,7 +105,6 @@ def main():
                 line-height: 1.6;
                 white-space: pre-wrap;
             }
-            /* Scrollbar for summary box if needed */
             .summary-box::-webkit-scrollbar {
                 width: 8px;
             }
@@ -105,33 +117,30 @@ def main():
         unsafe_allow_html=True
     )
 
-    # Sidebar content
+    # Sidebar
     with st.sidebar:
         st.header("🔎 About")
         st.write(
             """
-            This app transcribes YouTube videos and generates clear, concise summaries powered by Google Gemini Pro.
+            This app transcribes YouTube videos and generates clear, concise summaries powered by **Google Gemini Pro**.
             
-            **How to use:**
-            1. Paste a valid YouTube video URL in the main input field.
+            **Steps to use:**
+            1. Paste a valid YouTube video URL.
             2. Click **Generate Summary**.
-            3. Wait for the transcript to be fetched and the summary to appear.
-            
-            Enjoy your productivity boost!
+            3. Wait for the magic 🪄!
             """
         )
         st.markdown("---")
-        # Footer in sidebar
         st.markdown(
             '<div style="text-align:center; font-size:14px;">'
             'Built with ❤️ by <strong>Vithusan.V</strong><br>'
-            '✅ Developed by <a href="https://github.com/thasvithu" target="_blank">GitHub</a> | '
+            '✅ <a href="https://github.com/thasvithu" target="_blank">GitHub</a> | '
             '<a href="https://linkedin.com/in/thasvithu" target="_blank">LinkedIn</a>'
             '</div>',
             unsafe_allow_html=True
         )
 
-    # Main content header
+    # Main UI
     st.markdown('<div class="main-header">YouTube Video Summarizer</div>', unsafe_allow_html=True)
     st.markdown('<div class="subtitle">Paste a YouTube video link to get a summarized version of its transcript.</div>', unsafe_allow_html=True)
 
@@ -156,14 +165,14 @@ def main():
                 if transcript:
                     summary = generate_gemini_summary(transcript)
                     if summary:
-                        st.success("Summary generated successfully!")
+                        st.success("Summary generated successfully! ✅")
                         st.markdown('<div class="summary-box">', unsafe_allow_html=True)
                         st.write(summary)
                         st.markdown('</div>', unsafe_allow_html=True)
                 else:
-                    st.warning("Could not retrieve transcript. Please check the video URL.")
+                    st.warning("Could not retrieve transcript. Please try running the app locally or try another video.")
 
-    # Footer on main page
+    # Footer
     st.markdown("---")
     st.markdown(
         '<div style="text-align:center; font-size:12px; color:#888;">'
