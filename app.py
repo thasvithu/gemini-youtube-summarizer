@@ -151,7 +151,7 @@ def main():
             video_id = youtube_url.split("v=")[1].split("&")[0]
             with st.container():
                 st.markdown('<div class="video-card">', unsafe_allow_html=True)
-                st.image(f"https://img.youtube.com/vi/{video_id}/maxresdefault.jpg", use_column_width=True)
+                st.image(f"https://img.youtube.com/vi/{video_id}/maxresdefault.jpg", use_container_width=True)
                 st.markdown('</div>', unsafe_allow_html=True)
         except:
             st.warning("Could not load video thumbnail.")
